@@ -133,6 +133,29 @@ object ImageFun {
    }
 }
 
+object PerlinExamples {
+  import ImageFun._
+  import Perlin._
+
+  def perlin(gridSize: Double):Image[Double] = {
+    val pGen = Perlin(gridSize)
+    (x:Double, y:Double) => {
+      pGen.value(Coord(x,y))
+    }
+  }
+
+  def perlinCombo: Image[Double] = {
+    val p1 = perlin(50)
+    val p2 = perlin(50)
+    val p3 = perlin(10)
+
+    def add = (a:Double, b:Double) => a + b
+    def sub = (a: Double, b: Double) => a - b
+
+    combineImage(combineImage(p1, p2, add), p3, sub)
+  }
+}
+
 object ImageTransExamples {
 
    import Math._
@@ -310,6 +333,7 @@ object Main {
    import AnimationExamples._
    import ImageExamples._
    import ColorImplicits._
+   import PerlinExamples._
 
    val usage = """
       fun_graph demo 
@@ -352,6 +376,10 @@ object Main {
                 new Animate(400, 300, waveGridAnimation).show()
              case "bitmap_wave" =>
                 new Animate(400, 300, waveBitmapAnimation).show()
+             case "perlin_image" =>
+               new Draw(400, 300, perlin(50)).show()
+             case "perlin_combo" =>
+               new Draw(400, 300, perlinCombo).show()
              case _ =>
                 println("fun_graph: Unrecognised demo name")
                 println(usage)
